@@ -1,0 +1,49 @@
+import re
+from playwright.sync_api import Playwright, sync_playwright, expect
+
+
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("http://lacomet-pruebas-local.local/wp-login.php")
+    page.get_by_role("textbox", name="Nombre de usuario o dirección").fill("pasante_qa")
+    page.get_by_role("textbox", name="Contraseña").click()
+    page.get_by_role("textbox", name="Contraseña").press("CapsLock")
+    page.get_by_role("textbox", name="Contraseña").fill("P")
+    page.get_by_role("textbox", name="Contraseña").press("CapsLock")
+    page.get_by_role("textbox", name="Contraseña").fill("Pasante1234*")
+    page.get_by_role("button", name="Acceder").click()
+    page.get_by_role("link", name="Páginas", exact=True).click()
+    page.get_by_role("link", name="Páginas", exact=True).click()
+    page.get_by_role("link", name="Acerca de", exact=True).click()
+    page.goto("http://lacomet-pruebas-local.local/wp-admin/post.php?post=3234&action=edit")
+    page.goto("http://lacomet-pruebas-local.local/wp-admin/edit.php?post_type=page")
+    page.get_by_role("menuitem", name="Ctrl+K Abre la paleta de").click()
+    page.locator("div").filter(has_text="Comandos y ajustes de búsqueda").first.click()
+    page.get_by_role("searchbox", name="Buscar páginas:").click()
+    page.get_by_role("searchbox", name="Buscar páginas:").fill("cotizar")
+    page.get_by_role("searchbox", name="Buscar páginas:").press("Enter")
+    page.get_by_role("button", name="Buscar páginas").click()
+    page.get_by_role("link", name="Páginas", exact=True).click()
+    page.get_by_role("searchbox", name="Buscar páginas:").click()
+    page.get_by_role("searchbox", name="Buscar páginas:").fill("coti")
+    page.get_by_role("searchbox", name="Buscar páginas:").press("Enter")
+    page.get_by_role("link", name="— Cotice Aquí").click()
+    page.locator("div:nth-child(7) > .bt_bb_item > .bt_bb_toolbar > .bt_bb_toolbar_tools > .bt_bb_edit").first.click()
+    page.get_by_role("textbox", name="Add Headline text").click()
+    page.get_by_role("textbox", name="Add Headline text").fill("Determinaciones Químicas prueba de ")
+    page.get_by_role("textbox", name="Add Headline text").press("CapsLock")
+    page.get_by_role("textbox", name="Add Headline text").fill("Determinaciones Químicas prueba de W")
+    page.get_by_role("textbox", name="Add Headline text").press("CapsLock")
+    page.get_by_role("textbox", name="Add Headline text").fill("Determinaciones Químicas prueba de Wendy")
+    page.get_by_role("button", name="Submit").click()
+    page.get_by_role("button", name="Actualizar").click()
+
+    # ---------------------
+    context.close()
+    browser.close()
+
+
+with sync_playwright() as playwright:
+    run(playwright)
